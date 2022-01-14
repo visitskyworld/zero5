@@ -1,0 +1,60 @@
+{
+  "name": "spl-token-faucet",
+  "version": "0.0.1",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paul-schaaf/spl-token-faucet"
+  },
+  "keywords": [],
+  "author": "Paul",
+  "license": "MIT",
+  "testnetDefaultChannel": "v1.4.4",
+  "scripts": {
+    "lint": "eslint . --fix",
+    "build:client": "babel src/client -d dist/client",
+    "clean:client": "rm -rf dist/client && rm -rf store",
+    "deploy": "npm run build:client && node dist/client/deploy.js",
+    "deploy:clean": "npm run build:program && npm run clean:client && npm run deploy",
+    "init-pool": "npm run build:client && node dist/client/initPool.js",
+    "clean": "npm run clean:program && npm run clean:client && rm -rf dist",
+    "build:program": "cd src/program && cargo build-bpf && cd $INIT_CWD && rm -rf dist && mkdir dist && mkdir dist/program && mv src/program/target/deploy/spl_token_faucet.so dist/program/spl_token_faucet.so",
+    "clippy": "cd src/program && cargo clippy",
+    "fmt": "cd src/program && cargo fmt",
+    "clean:program": "cd src/program && cargo clean && cd $INIT_CWD && rm -rf dist/program",
+    "test:program": "cd src/program && cargo test-bpf",
+    "cluster:localnet": "npm run clean:store && rm -f .env",
+    "cluster:devnet": "npm run clean:store && cp cluster-devnet.env .env",
+    "cluster:testnet": "npm run clean:store && cp cluster-testnet.env .env",
+    "cluster:mainnet-beta": "npm run clean:store && cp cluster-mainnet-beta.env .env",
+    "localnet:update": "solana-localnet update",
+    "localnet:up": "set -x; solana-localnet down; set -e; RUST_LOG=solana_runtime::system_instruction_processor=trace,solana_runtime::message_processor=info,solana_bpf_loader=debug,solana_rbpf=debug solana-localnet up",
+    "localnet:down": "solana-localnet down",
+    "localnet:logs": "solana-localnet logs -f"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
+  },
+  "dependencies": {
+    "@solana/spl-token": "0.0.13",
+    "@solana/web3.js": "^0.86.2",
+    "bip32": "^2.0.6",
+    "bip39": "^3.0.3",
+    "buffer-layout": "^1.2.0",
+    "dotenv": "^8.2.0",
+    "mkdirp-promise": "^5.0.1",
+    "mz": "^2.7.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "engines": {
+    "node": "11.x"
+  }
+}
